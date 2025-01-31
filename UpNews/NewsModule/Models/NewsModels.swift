@@ -7,20 +7,20 @@
 
 import Foundation
 
-// MARK: - NewsPageModel
-struct NewsPageModel {
+// MARK: - NewsPage
+struct NewsPage: Codable {
     var requestId: String?
-    var news: [ArticleModel] {
-        didSet {
-            for index in news.indices {
-                news[index].requestId = requestId
-            }
+    var news: [Article]?
+    
+    mutating func passTheRequestId() {
+        for index in 0..<(news?.count ?? 0) {
+            news?[index].requestId = requestId
         }
     }
 }
 
-// MARK: - ArticleModel
-struct ArticleModel: Decodable {
+// MARK: - Article
+struct Article: Codable {
     var newsId: Int?
     var title: String?
     var announce: String?
@@ -34,6 +34,13 @@ struct ArticleModel: Decodable {
 }
 
 // MARK: - ImageContainer
-struct ImageContainer: Decodable {
+struct ImageContainer: Codable {
     var url: URL?
+}
+
+// MARK: - NewsAddress
+struct NewsAddress {
+    var rubricId: Int
+    var pageSize: Int
+    var pageIndex: Int
 }

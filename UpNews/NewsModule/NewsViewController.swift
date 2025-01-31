@@ -25,6 +25,7 @@ final class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+        interactor?.loadFreshNews()
     }
     
     // MARK: - Methods

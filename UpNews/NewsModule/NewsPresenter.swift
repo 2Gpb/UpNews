@@ -12,7 +12,7 @@ final class NewsPresenter: NewsPresentationLogic {
     weak var view: NewsViewController?
     
     // MARK: - Methods
-    func presentNews(articles: [ArticleModel]) {
+    func presentNews(articles: [Article]) {
         view?.displayNews()
     }
 }

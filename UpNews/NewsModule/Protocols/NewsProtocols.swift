@@ -11,13 +11,13 @@ protocol NewsBusinessLogic {
 }
 
 protocol NewsPresentationLogic {
-    func presentNews(articles: [ArticleModel])
+    func presentNews(articles: [Article])
 }
 
 protocol ArticleDataStore {
-    var articles: [ArticleModel] { get set }
+    var articles: [Article] { get set }
 }
 
 protocol NewsWorker {
-    
+    func fetchNews(for address: NewsAddress, completion: ((Result<NewsPage?, Error>) -> Void)?)
 }
