@@ -7,6 +7,19 @@
 
 import Foundation
 
+// MARK: - NewsPageModel
+struct NewsPageModel {
+    var requestId: String?
+    var news: [ArticleModel] {
+        didSet {
+            for index in news.indices {
+                news[index].requestId = requestId
+            }
+        }
+    }
+}
+
+// MARK: - ArticleModel
 struct ArticleModel: Decodable {
     var newsId: Int?
     var title: String?
@@ -20,17 +33,7 @@ struct ArticleModel: Decodable {
     }
 }
 
+// MARK: - ImageContainer
 struct ImageContainer: Decodable {
     var url: URL?
-}
-
-struct NewsPageModel {
-    var requestId: String?
-    var news: [ArticleModel] {
-        didSet {
-            for (index, value) in news.enumerated() {
-                news[index].requestId = requestId
-            }
-        }
-    }
 }

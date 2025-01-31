@@ -8,8 +8,10 @@
 import UIKit
 
 final class NewsViewController: UIViewController {
+    // MARK: - Variables
     private var interactor: (NewsBusinessLogic & ArticleDataStore)?
     
+    // MARK: - Lifecycle
     init(interactor: (NewsBusinessLogic & ArticleDataStore)?) {
         self.interactor = interactor
         super.init(nibName: nil, bundle: nil)
@@ -23,10 +25,8 @@ final class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        interactor?.loadStart()
     }
     
-    func displayStart() {
-        print("test")
-    }
+    // MARK: - Methods
+    func displayNews() { }
 }

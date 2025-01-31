@@ -8,9 +8,11 @@
 import UIKit
 
 final class NewsPresenter: NewsPresentationLogic {
+    // MARK: - Variables
     weak var view: NewsViewController?
     
-    func presentStart() {
-        view?.displayStart()
+    // MARK: - Methods
+    func presentNews(articles: [ArticleModel]) {
+        view?.displayNews()
     }
 }

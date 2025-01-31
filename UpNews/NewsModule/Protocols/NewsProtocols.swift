@@ -6,15 +6,18 @@
 //
 
 protocol NewsBusinessLogic {
-    func loadStart()
     func loadFreshNews()
     func loadMoreNews()
 }
 
 protocol NewsPresentationLogic {
-    func presentStart()
+    func presentNews(articles: [ArticleModel])
 }
 
 protocol ArticleDataStore {
-    var articles: [String] { get set }
+    var articles: [ArticleModel] { get set }
+}
+
+protocol NewsWorker {
+    
 }

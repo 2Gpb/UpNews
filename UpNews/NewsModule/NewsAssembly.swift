@@ -7,10 +7,11 @@
 import UIKit
 
 enum NewsAssembly {
+    // MARK: - Build
     static func build() -> UIViewController {
-        let presenter = NewsPresenter()
-        let interactor = NewsInteractor(presenter: presenter)
-        let view = NewsViewController(interactor: interactor)
+        let presenter: NewsPresenter = NewsPresenter()
+        let interactor: NewsInteractor = NewsInteractor(presenter: presenter)
+        let view: NewsViewController = NewsViewController(interactor: interactor)
         
         presenter.view = view
         return view

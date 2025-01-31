@@ -8,17 +8,22 @@
 import UIKit
 
 final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
+    // MARK: - Fields
     private let presenter: NewsPresentationLogic
-    var articles: [String] = []
     
+    // MARK: - Properties
+    var articles: [ArticleModel] = [] {
+        didSet {
+            presenter.presentNews(articles: articles)
+        }
+    }
+    
+    // MARK: - Lifecycle
     init(presenter: NewsPresentationLogic) {
         self.presenter = presenter
     }
     
-    func loadStart() {
-        presenter.presentStart()
-    }
-    
+    // MARK: - Methods
     func loadFreshNews() {
         
     }
