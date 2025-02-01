@@ -17,7 +17,7 @@ final class NewsPresenter: NewsPresentationLogic {
         for article in response ?? [] {
             articles.append(Article.ViewModel(
                 title: article.title,
-                announce: article.title,
+                announce: article.announce,
                 img: article.img,
                 articleUrl: article.articleUrl)
             )

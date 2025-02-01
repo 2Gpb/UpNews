@@ -44,18 +44,21 @@ final class NewsViewController: UIViewController {
     // MARK: - Methods
     func displayNews(_ articles: [Article.ViewModel]?) {
         print(articles ?? "")
+        newsTableView.reloadData()
     }
     
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = .white
+        navigationController?.setNavigationBarHidden(true, animated: true)
         setUpNewsTable()
     }
     
     private func setUpNewsTable() {
         newsTableView.delegate = self
-        newsTableView.dataSource = self
+        newsTableView.dataSource = interactor
         newsTableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.reuseId)
+        newsTableView.estimatedRowHeight = 400
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
@@ -66,22 +69,8 @@ final class NewsViewController: UIViewController {
 }
 
 extension NewsViewController: UITableViewDelegate {
-    
-}
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 
-extension NewsViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: NewsCell.reuseId,
-            for: indexPath
-        ) as? NewsCell else {
-            return UITableViewCell()
-        }
-        
-        return cell
-    }
 }

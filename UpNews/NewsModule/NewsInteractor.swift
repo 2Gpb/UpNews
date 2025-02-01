@@ -7,17 +7,17 @@
 
 import UIKit
 
-final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
+final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     // MARK: - Fields
     private let presenter: NewsPresentationLogic
     private let newsService: NewsWorker
     
     // MARK: - Properties
-    var articles: [Article.Response]? = [] {
-        didSet {
-            presenter.presentNews(response: articles)
-        }
-    }
+    var articles: [Article.Response]? = [] // {
+//        didSet {
+//            presenter.presentNews(response: articles)
+//        }
+//    }
     
     // MARK: - Lifecycle
     init(presenter: NewsPresentationLogic, newsService: NewsWorker) {
@@ -63,7 +63,33 @@ final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
                         )
                     )
                 }
+                self?.presenter.presentNews(response: self?.articles ?? [])
             }
         }
+    }
+}
+
+extension NewsInteractor {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        articles?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: NewsCell.reuseId,
+            for: indexPath
+        ) as? NewsCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(
+                title: articles?[indexPath.row].title ?? "",
+                description: articles?[indexPath.row].announce ?? "",
+                img: articles?[indexPath.row].img ?? UIImage()
+            )
+        
+        print(articles?[indexPath.row].articleUrl ?? "")
+        
+        return cell
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol NewsBusinessLogic {
+protocol NewsBusinessLogic: UITableViewDataSource {
     func loadFreshNews()
 }
 
