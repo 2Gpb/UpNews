@@ -9,11 +9,12 @@ import Foundation
 import UIKit
 
 protocol NewsBusinessLogic: UITableViewDataSource {
+    func loadStart()
     func loadFreshNews()
 }
 
 protocol NewsPresentationLogic {
-    func presentNews(response: [Article.Response]?)
+    func presentNews()
 }
 
 protocol ArticleDataStore {

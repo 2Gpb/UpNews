@@ -12,19 +12,9 @@ final class NewsPresenter: NewsPresentationLogic {
     weak var view: NewsViewController?
     
     // MARK: - Methods
-    func presentNews(response: [Article.Response]?) {
-        var articles: [Article.ViewModel] = []
-        for article in response ?? [] {
-            articles.append(Article.ViewModel(
-                title: article.title,
-                announce: article.announce,
-                img: article.img,
-                articleUrl: article.articleUrl)
-            )
-        }
-        
+    func presentNews() {
         DispatchQueue.main.async { [weak self] in
-            self?.view?.displayNews(articles)
+            self?.view?.displayNews()
         }
     }
 }

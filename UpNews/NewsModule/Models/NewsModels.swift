@@ -11,9 +11,7 @@ import UIKit
 enum Start {
     struct Request { }
     struct Response { }
-    struct ViewModel {
-        var buttonTitle: String
-    }
+    struct ViewModel { }
 }
 
 enum Article {
@@ -24,12 +22,7 @@ enum Article {
         var articleUrl: URL?
     }
     
-    struct ViewModel {
-        var title: String?
-        var announce: String?
-        var img: UIImage?
-        var articleUrl: URL?
-    }
+    struct ViewModel { }
 }
 
 // MARK: - NewsPage

@@ -13,6 +13,18 @@ final class NewsViewController: UIViewController {
         enum Error {
             static let message = "init(coder:) has not been implemented"
         }
+        
+        enum View {
+            static let backgroundColor: UIColor = .primaryGray
+        }
+        
+        enum TableView {
+            static let backgroundColor: UIColor = .clear
+            static let separatorStyle: UITableViewCell.SeparatorStyle = .none
+            static let verticalIndicator: Bool = false
+            static let horizontalOffset: CGFloat = 4
+            static let heightForRowAt: CGFloat = 400
+        }
     }
     
     // MARK: - Variables
@@ -35,42 +47,43 @@ final class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        interactor?.loadFreshNews()
+        interactor?.loadStart()
     }
     
     // MARK: - Methods
-    func displayNews(_ articles: [Article.ViewModel]?) {
-        print(articles ?? "")
+    func displayNews() {
         newsTableView.reloadData()
     }
     
     // MARK: - SetUp
     private func setUp() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.View.backgroundColor
         navigationController?.setNavigationBarHidden(true, animated: true)
         setUpNewsTable()
     }
     
     private func setUpNewsTable() {
+        newsTableView.backgroundColor = Constants.TableView.backgroundColor
+        newsTableView.separatorStyle = Constants.TableView.separatorStyle
+        newsTableView.showsVerticalScrollIndicator = Constants.TableView.verticalIndicator
         newsTableView.delegate = self
         newsTableView.dataSource = interactor
         newsTableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.reuseId)
-        newsTableView.estimatedRowHeight = 400
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
-        newsTableView.pinLeft(to: view.safeAreaLayoutGuide.leadingAnchor)
         newsTableView.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor)
-        newsTableView.pinRight(to: view.safeAreaLayoutGuide.trailingAnchor)
+        newsTableView.pinHorizontal(to: view, Constants.TableView.horizontalOffset)
     }
 }
 
+// MARK: - UITableViewDelegate
 extension NewsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        Constants.TableView.heightForRowAt
     }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath.row)
+    }
 }

@@ -13,11 +13,7 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     private let newsService: NewsWorker
     
     // MARK: - Properties
-    var articles: [Article.Response]? = [] // {
-//        didSet {
-//            presenter.presentNews(response: articles)
-//        }
-//    }
+    var articles: [Article.Response]? = []
     
     // MARK: - Lifecycle
     init(presenter: NewsPresentationLogic, newsService: NewsWorker) {
@@ -26,6 +22,10 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     }
     
     // MARK: - Methods
+    func loadStart() {
+        loadFreshNews()
+    }
+    
     func loadFreshNews() {
         newsService.fetchNews(
             for: NewsAddress(
@@ -38,38 +38,41 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
             switch response {
             case .success(let response):
                 guard var response else {
-                    print("-1")
+                    print("0")
                     return
                 }
                 
                 response.passTheRequestId()
                 self?.article(response: response)
             case .failure:
-                print("0")
+                print("-1")
             }
         }
     }
     
+    // MARK: - Private methods
     private func article(response: NewsPage) {
         if let articles = response.news {
             DispatchQueue.global().async { [weak self] in
                 for article in articles {
+                    let photo = self?.newsService.loadImage(article.img?.url)
                     self?.articles?.append(
                         Article.Response(
                             title: article.title,
                             announce: article.announce,
-                            img: self?.newsService.loadImage(article.img?.url),
+                            img: photo,
                             articleUrl: article.articleUrl
                         )
                     )
                 }
-                self?.presenter.presentNews(response: self?.articles ?? [])
+                self?.presenter.presentNews()
             }
         }
     }
 }
 
-extension NewsInteractor {
+// MARK: - UITableViewDataSource
+extension NewsInteractor: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         articles?.count ?? 0
     }
@@ -87,8 +90,6 @@ extension NewsInteractor {
                 description: articles?[indexPath.row].announce ?? "",
                 img: articles?[indexPath.row].img ?? UIImage()
             )
-        
-        print(articles?[indexPath.row].articleUrl ?? "")
         
         return cell
     }
