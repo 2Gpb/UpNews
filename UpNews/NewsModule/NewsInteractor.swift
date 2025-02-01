@@ -13,9 +13,9 @@ final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
     private let newsService: NewsWorker
     
     // MARK: - Properties
-    var articles: [Article] = [] {
+    var articles: [Article.Response]? = [] {
         didSet {
-            presenter.presentNews(articles: articles)
+            presenter.presentNews(response: articles)
         }
     }
     
@@ -33,7 +33,7 @@ final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
                 pageSize: 8,
                 pageIndex: 2
             )
-        ) { response in
+        ) { [weak self] response in
 
             switch response {
             case .success(let response):
@@ -43,14 +43,27 @@ final class NewsInteractor: NewsBusinessLogic, ArticleDataStore {
                 }
                 
                 response.passTheRequestId()
-                print(response)
+                self?.article(response: response)
             case .failure:
                 print("0")
             }
         }
     }
     
-    func loadMoreNews() {
-        
+    private func article(response: NewsPage) {
+        if let articles = response.news {
+            DispatchQueue.global().async { [weak self] in
+                for article in articles {
+                    self?.articles?.append(
+                        Article.Response(
+                            title: article.title,
+                            announce: article.announce,
+                            img: self?.newsService.loadImage(article.img?.url),
+                            articleUrl: article.articleUrl
+                        )
+                    )
+                }
+            }
+        }
     }
 }

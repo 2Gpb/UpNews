@@ -5,19 +5,22 @@
 //  Created by Peter on 31.01.2025.
 //
 
+import Foundation
+import UIKit
+
 protocol NewsBusinessLogic {
     func loadFreshNews()
-    func loadMoreNews()
 }
 
 protocol NewsPresentationLogic {
-    func presentNews(articles: [Article])
+    func presentNews(response: [Article.Response]?)
 }
 
 protocol ArticleDataStore {
-    var articles: [Article] { get set }
+    var articles: [Article.Response]? { get set }
 }
 
 protocol NewsWorker {
     func fetchNews(for address: NewsAddress, completion: ((Result<NewsPage?, Error>) -> Void)?)
+    func loadImage(_ imageUrl: URL?) -> UIImage?
 }

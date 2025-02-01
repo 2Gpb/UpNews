@@ -6,11 +6,36 @@
 //
 
 import Foundation
+import UIKit
+
+enum Start {
+    struct Request { }
+    struct Response { }
+    struct ViewModel {
+        var buttonTitle: String
+    }
+}
+
+enum Article {
+    struct Response {
+        var title: String?
+        var announce: String?
+        var img: UIImage?
+        var articleUrl: URL?
+    }
+    
+    struct ViewModel {
+        var title: String?
+        var announce: String?
+        var img: UIImage?
+        var articleUrl: URL?
+    }
+}
 
 // MARK: - NewsPage
 struct NewsPage: Codable {
     var requestId: String?
-    var news: [Article]?
+    var news: [Story]?
     
     mutating func passTheRequestId() {
         for index in 0..<(news?.count ?? 0) {
@@ -20,7 +45,7 @@ struct NewsPage: Codable {
 }
 
 // MARK: - Article
-struct Article: Codable {
+struct Story: Codable {
     var newsId: Int?
     var title: String?
     var announce: String?

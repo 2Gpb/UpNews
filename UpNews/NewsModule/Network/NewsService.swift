@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 final class NewsService: NewsWorker {
     private let networking: NetworkingLogic
@@ -28,6 +29,12 @@ final class NewsService: NewsWorker {
         fetch(request: Request(endpoint: endpoint, timeInterval: 5), completion: completion)
     }
     
+    func loadImage(_ imageUrl: URL?) -> UIImage? {
+        guard let url = imageUrl,
+              let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+        
     private func fetch<T: Decodable>(
         request: Request,
         completion: ((Result<T?, Error>) -> Void)?
