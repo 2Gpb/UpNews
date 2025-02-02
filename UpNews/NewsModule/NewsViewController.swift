@@ -24,6 +24,7 @@ final class NewsViewController: UIViewController {
             static let verticalIndicator: Bool = false
             static let horizontalOffset: CGFloat = 4
             static let heightForRowAt: CGFloat = 400
+            static let swipeTitle: String = "Share"
         }
     }
     
@@ -89,5 +90,17 @@ extension NewsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         interactor.loadWebView(indexPath.row)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal, title: Constants.TableView.swipeTitle) { [weak self] _, _, completion in
+            self?.interactor.loadActivityController(indexPath.row)
+            completion(true)
+        }
+        
+        action.backgroundColor = .primaryBlue
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
     }
 }

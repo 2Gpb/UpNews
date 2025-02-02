@@ -25,4 +25,9 @@ extension NewsPresenter: NewsRouterLogic {
         let webView = WebViewAssembly.build(with: url)
         view?.navigationController?.pushViewController(webView, animated: true)
     }
+    
+    func routeToActivityController(with url: URL?) {
+        let activityController = UIActivityViewController(activityItems: [url ?? ""], applicationActivities: nil)
+        view?.navigationController?.present(activityController, animated: true)
+    }
 }

@@ -12,6 +12,7 @@ protocol NewsBusinessLogic: UITableViewDataSource {
     func loadStart()
     func loadFreshNews()
     func loadWebView(_ index: Int)
+    func loadActivityController(_ index: Int)
 }
 
 protocol NewsPresentationLogic {
@@ -20,6 +21,7 @@ protocol NewsPresentationLogic {
 
 protocol NewsRouterLogic {
     func routeToWebView(with url: URL?)
+    func routeToActivityController(with url: URL?)
 }
 
 protocol ArticleDataStore {

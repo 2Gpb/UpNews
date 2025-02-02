@@ -56,6 +56,10 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
         presenter.routeToWebView(with: articles?[index].articleUrl)
     }
     
+    func loadActivityController(_ index: Int) {
+        presenter.routeToActivityController(with: articles?[index].articleUrl)
+    }
+    
     // MARK: - Private methods
     private func article(response: NewsPage) {
         if let articles = response.news {
