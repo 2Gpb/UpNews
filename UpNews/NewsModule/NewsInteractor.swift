@@ -9,21 +9,23 @@ import UIKit
 
 final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     // MARK: - Fields
-    private let presenter: NewsPresentationLogic
+    private let presenter: NewsPresentationLogic & NewsRouterLogic
     private let newsService: NewsWorker
     
     // MARK: - Properties
     var articles: [Article.Response]? = []
     
     // MARK: - Lifecycle
-    init(presenter: NewsPresentationLogic, newsService: NewsWorker) {
+    init(presenter: NewsPresentationLogic & NewsRouterLogic, newsService: NewsWorker) {
         self.presenter = presenter
         self.newsService = newsService
     }
     
     // MARK: - Methods
     func loadStart() {
-        loadFreshNews()
+        if articles?.isEmpty ?? false {
+            loadFreshNews()
+        }
     }
     
     func loadFreshNews() {
@@ -50,17 +52,20 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
         }
     }
     
+    func loadWebView(_ index: Int) {
+        presenter.routeToWebView(with: articles?[index].articleUrl)
+    }
+    
     // MARK: - Private methods
     private func article(response: NewsPage) {
         if let articles = response.news {
             DispatchQueue.global().async { [weak self] in
                 for article in articles {
-                    let photo = self?.newsService.loadImage(article.img?.url)
                     self?.articles?.append(
                         Article.Response(
                             title: article.title,
                             announce: article.announce,
-                            img: photo,
+                            img: self?.newsService.loadImage(article.img?.url),
                             articleUrl: article.articleUrl
                         )
                     )

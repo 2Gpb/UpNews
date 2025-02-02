@@ -31,7 +31,10 @@ final class NewsService: NewsWorker {
     
     func loadImage(_ imageUrl: URL?) -> UIImage? {
         guard let url = imageUrl,
-              let data = try? Data(contentsOf: url) else { return nil }
+              let data = try? Data(contentsOf: url) else {
+            return nil
+        }
+        
         return UIImage(data: data)
     }
         

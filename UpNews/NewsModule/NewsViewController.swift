@@ -28,13 +28,13 @@ final class NewsViewController: UIViewController {
     }
     
     // MARK: - Variables
-    private var interactor: (NewsBusinessLogic & ArticleDataStore)?
+    private var interactor: NewsBusinessLogic & ArticleDataStore
     
     // MARK: - Private fields
     private let newsTableView: UITableView = UITableView()
     
     // MARK: - Lifecycle
-    init(interactor: (NewsBusinessLogic & ArticleDataStore)?) {
+    init(interactor: NewsBusinessLogic & ArticleDataStore) {
         self.interactor = interactor
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,7 +47,11 @@ final class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        interactor?.loadStart()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        interactor.loadStart()
     }
     
     // MARK: - Methods
@@ -84,6 +88,6 @@ extension NewsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+        interactor.loadWebView(indexPath.row)
     }
 }

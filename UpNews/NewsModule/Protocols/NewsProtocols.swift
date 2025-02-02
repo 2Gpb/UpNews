@@ -11,10 +11,15 @@ import UIKit
 protocol NewsBusinessLogic: UITableViewDataSource {
     func loadStart()
     func loadFreshNews()
+    func loadWebView(_ index: Int)
 }
 
 protocol NewsPresentationLogic {
     func presentNews()
+}
+
+protocol NewsRouterLogic {
+    func routeToWebView(with url: URL?)
 }
 
 protocol ArticleDataStore {

@@ -18,3 +18,11 @@ final class NewsPresenter: NewsPresentationLogic {
         }
     }
 }
+
+// MARK: - NewsRouterLogic
+extension NewsPresenter: NewsRouterLogic {
+    func routeToWebView(with url: URL?) {
+        let webView = WebViewAssembly.build(with: url)
+        view?.navigationController?.pushViewController(webView, animated: true)
+    }
+}
