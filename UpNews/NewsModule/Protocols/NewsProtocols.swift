@@ -20,7 +20,7 @@ protocol NewsPresentationLogic {
 }
 
 protocol NewsRouterLogic {
-    func routeToWebView(with url: URL?)
+    func routeToWeb(with url: URL)
     func routeToActivityController(with url: URL?)
 }
 
@@ -30,5 +30,4 @@ protocol ArticleDataStore {
 
 protocol NewsWorker {
     func fetchNews(for address: NewsAddress, completion: ((Result<NewsPage?, Error>) -> Void)?)
-    func loadImage(_ imageUrl: URL?) -> UIImage?
 }

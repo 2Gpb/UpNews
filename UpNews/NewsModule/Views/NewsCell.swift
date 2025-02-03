@@ -23,45 +23,46 @@ final class NewsCell: UITableViewCell {
             static let selectionStyle: UITableViewCell.SelectionStyle = .none
         }
         
-        enum Image {
-            static let contentMode: UIView.ContentMode = .scaleAspectFill
-            static let radius: CGFloat = 12
+        enum Wrap {
+            static let backgroundColor: UIColor = .white
+            static let cornerRadius: CGFloat = 12
             static let clipsToBounds: Bool = true
-            static let verticalOffset: CGFloat = 8
             static let horizontalOffset: CGFloat = 4
+            static let verticalOffset: CGFloat = 8
         }
         
-        enum Description {
-            static let numberOfLines: Int = 4
-            static let font: UIFont = .systemFont(ofSize: 15, weight: .semibold)
-            static let textColor: UIColor = .white
-            static let bottomOffset: CGFloat = 8
-            static let horizontalOffset: CGFloat = 8
+        enum Image {
+            static let contentMode: UIView.ContentMode = .scaleAspectFill
+            static let radius: CGFloat = 0
+            static let clipsToBounds: Bool = true
+            static let topOffset: CGFloat = 0
+            static let horizontalOffset: CGFloat = 0
+            static let height: CGFloat = 200
         }
         
         enum Title {
             static let numberOfLines: Int = 0
-            static let font: UIFont = .systemFont(ofSize: 19, weight: .bold)
-            static let textColor: UIColor = .primaryBlue
-            static let bottomOffset: CGFloat = 8
-            static let horizontalOffset: CGFloat = 8
+            static let font: UIFont = .systemFont(ofSize: 18, weight: .semibold)
+            static let textColor: UIColor = .black
+            static let topOffset: CGFloat = 8
+            static let horizontalOffset: CGFloat = 12
         }
         
-        enum GradientLayer {
-            static let startPoint: CGPoint = CGPoint(x: 0.5, y: 0)
-            static let endPoint: CGPoint = CGPoint(x: 0.5, y: 1.0)
-            static let locations: [NSNumber] = [0, 0.7]
-            static let colors: [CGColor] = [
-                UIColor.clear.cgColor,
-                UIColor.black.withAlphaComponent(0.8).cgColor
-            ]
+        enum Description {
+            static let numberOfLines: Int = 4
+            static let font: UIFont = .systemFont(ofSize: 14, weight: .regular)
+            static let textColor: UIColor = .lightGray
+            static let topOffset: CGFloat = 8
+            static let bottomOffset: CGFloat = 12
+            static let horizontalOffset: CGFloat = 12
         }
     }
     
     // MARK: - Private fields
+    private let wrapView: UIView = UIView()
+    private var imgView: ImageView = ImageView()
     private let titleLabel: UILabel = UILabel()
     private let descriptionLabel: UILabel = UILabel()
-    private let image: UIImageView = UIImageView()
     private let gradientLayer: CAGradientLayer = CAGradientLayer()
     
     // MARK: - ReuseId
@@ -78,21 +79,11 @@ final class NewsCell: UITableViewCell {
         fatalError(Constants.Error.message)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setUpGradientLayer()
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        image.layer.sublayers?.removeAll()
-    }
-    
     // MARK: - Methods
-    func configure(title: String, description: String, img: UIImage?) {
+    func configure(title: String, description: String, url: URL?) {
         titleLabel.text = title
         descriptionLabel.text = description
-        image.image = img
+        imgView.loadImage(url)
     }
     
     // MARK: - SetUp
@@ -100,29 +91,27 @@ final class NewsCell: UITableViewCell {
         self.backgroundColor = Constants.Cell.backgroundColor
         self.selectionStyle = Constants.Cell.selectionStyle
         
+        setUpWrap()
         setUpImage()
-        setUpDescription()
         setUpTitle()
+        setUpDescription()
+    }
+    
+    private func setUpWrap() {
+        wrapView.backgroundColor = Constants.Wrap.backgroundColor
+        wrapView.layer.cornerRadius = Constants.Wrap.cornerRadius
+        wrapView.clipsToBounds = Constants.Wrap.clipsToBounds
+         
+        addSubview(wrapView)
+        wrapView.pinHorizontal(to: self, Constants.Wrap.horizontalOffset)
+        wrapView.pinVertical(to: self, Constants.Wrap.verticalOffset)
     }
     
     private func setUpImage() {
-        image.contentMode = Constants.Image.contentMode
-        image.layer.cornerRadius = Constants.Image.radius
-        image.clipsToBounds = Constants.Image.clipsToBounds
-        
-        addSubview(image)
-        image.pinVertical(to: self, Constants.Image.verticalOffset)
-        image.pinHorizontal(to: self, Constants.Image.horizontalOffset)
-    }
-    
-    private func setUpDescription() {
-        descriptionLabel.numberOfLines = Constants.Description.numberOfLines
-        descriptionLabel.font = Constants.Description.font
-        descriptionLabel.textColor = Constants.Description.textColor
-        
-        addSubview(descriptionLabel)
-        descriptionLabel.pinBottom(to: image.bottomAnchor, Constants.Description.bottomOffset)
-        descriptionLabel.pinHorizontal(to: image, Constants.Description.horizontalOffset)
+        wrapView.addSubview(imgView)
+        imgView.pinTop(to: wrapView, Constants.Image.topOffset)
+        imgView.pinHorizontal(to: wrapView, Constants.Image.horizontalOffset)
+        imgView.setHeight(Constants.Image.height)
     }
     
     private func setUpTitle() {
@@ -130,21 +119,19 @@ final class NewsCell: UITableViewCell {
         titleLabel.font = Constants.Title.font
         titleLabel.textColor = Constants.Title.textColor
         
-        addSubview(titleLabel)
-        titleLabel.pinBottom(to: descriptionLabel.topAnchor, Constants.Title.bottomOffset)
-        titleLabel.pinHorizontal(to: image, Constants.Title.horizontalOffset)
+        wrapView.addSubview(titleLabel)
+        titleLabel.pinTop(to: imgView.bottomAnchor, Constants.Title.topOffset)
+        titleLabel.pinHorizontal(to: imgView, Constants.Title.horizontalOffset)
     }
     
-    private func setUpGradientLayer() {
-        if image.layer.sublayers?.contains(where: { $0 is CAGradientLayer }) == true {
-            return
-        }
+    private func setUpDescription() {
+        descriptionLabel.numberOfLines = Constants.Description.numberOfLines
+        descriptionLabel.font = Constants.Description.font
+        descriptionLabel.textColor = Constants.Description.textColor
         
-        gradientLayer.colors = Constants.GradientLayer.colors
-        gradientLayer.startPoint = Constants.GradientLayer.startPoint
-        gradientLayer.endPoint = Constants.GradientLayer.endPoint
-        gradientLayer.locations = Constants.GradientLayer.locations
-        gradientLayer.frame = image.bounds
-        image.layer.addSublayer(gradientLayer)
+        wrapView.addSubview(descriptionLabel)
+        descriptionLabel.pinTop(to: titleLabel.bottomAnchor, Constants.Description.topOffset)
+        descriptionLabel.pinHorizontal(to: imgView, Constants.Description.horizontalOffset)
+        descriptionLabel.pinBottom(to: wrapView, Constants.Description.bottomOffset)
     }
 }

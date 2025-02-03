@@ -18,7 +18,7 @@ enum Article {
     struct Response {
         var title: String?
         var announce: String?
-        var img: UIImage?
+        var imgUrl: URL?
         var articleUrl: URL?
     }
     

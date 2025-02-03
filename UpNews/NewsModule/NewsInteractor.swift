@@ -53,7 +53,8 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     }
     
     func loadWebView(_ index: Int) {
-        presenter.routeToWebView(with: articles?[index].articleUrl)
+        let url = articles?[index].articleUrl ?? URL(fileURLWithPath: "")
+        presenter.routeToWeb(with: url)
     }
     
     func loadActivityController(_ index: Int) {
@@ -62,21 +63,17 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     
     // MARK: - Private methods
     private func article(response: NewsPage) {
-        if let articles = response.news {
-            DispatchQueue.global().async { [weak self] in
-                for article in articles {
-                    self?.articles?.append(
-                        Article.Response(
-                            title: article.title,
-                            announce: article.announce,
-                            img: self?.newsService.loadImage(article.img?.url),
-                            articleUrl: article.articleUrl
-                        )
-                    )
-                }
-                self?.presenter.presentNews()
-            }
+        for article in response.news ?? [] {
+            self.articles?.append(
+                Article.Response(
+                    title: article.title,
+                    announce: article.announce,
+                    imgUrl: article.img?.url,
+                    articleUrl: article.articleUrl
+                )
+            )
         }
+        self.presenter.presentNews()
     }
 }
 
@@ -97,7 +94,7 @@ extension NewsInteractor: UITableViewDataSource {
         cell.configure(
                 title: articles?[indexPath.row].title ?? "",
                 description: articles?[indexPath.row].announce ?? "",
-                img: articles?[indexPath.row].img ?? UIImage()
+                url: articles?[indexPath.row].imgUrl
             )
         
         return cell

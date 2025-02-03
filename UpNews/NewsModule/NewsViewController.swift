@@ -19,12 +19,14 @@ final class NewsViewController: UIViewController {
         }
         
         enum TableView {
-            static let backgroundColor: UIColor = .clear
+            static let backgroundColor: UIColor = .primaryGray
             static let separatorStyle: UITableViewCell.SeparatorStyle = .none
             static let verticalIndicator: Bool = false
-            static let horizontalOffset: CGFloat = 4
+            static let horizontalOffset: CGFloat = 12
             static let heightForRowAt: CGFloat = 400
             static let swipeTitle: String = "Share"
+            static let swipeImg: UIImage? = UIImage(systemName: "square.and.arrow.up")
+            static let estimatedRowHeight: CGFloat = 400
         }
     }
     
@@ -74,26 +76,32 @@ final class NewsViewController: UIViewController {
         newsTableView.delegate = self
         newsTableView.dataSource = interactor
         newsTableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.reuseId)
+        newsTableView.estimatedRowHeight = Constants.TableView.estimatedRowHeight
+        newsTableView.rowHeight = UITableView.automaticDimension
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
-        newsTableView.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor)
+        newsTableView.pinBottom(to: view.bottomAnchor)
         newsTableView.pinHorizontal(to: view, Constants.TableView.horizontalOffset)
     }
 }
 
 // MARK: - UITableViewDelegate
 extension NewsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        Constants.TableView.heightForRowAt
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         interactor.loadWebView(indexPath.row)
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .normal, title: Constants.TableView.swipeTitle) { [weak self] _, _, completion in
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(
+            style: .normal,
+            title: Constants.TableView.swipeTitle
+        ) { [weak self] _, _, completion in
             self?.interactor.loadActivityController(indexPath.row)
             completion(true)
         }
@@ -102,5 +110,27 @@ extension NewsViewController: UITableViewDelegate {
         let configuration = UISwipeActionsConfiguration(actions: [action])
         configuration.performsFirstActionWithFullSwipe = false
         return configuration
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        let menu = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            let shareAction = UIAction(
+                title: Constants.TableView.swipeTitle,
+                image: Constants.TableView.swipeImg
+            ) { [weak self] _ in
+                self?.interactor.loadActivityController(indexPath.row)
+            }
+            
+            return UIMenu(children: [shareAction])
+        }
+        
+        return menu
     }
 }

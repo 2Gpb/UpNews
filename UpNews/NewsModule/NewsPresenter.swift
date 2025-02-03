@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 final class NewsPresenter: NewsPresentationLogic {
     // MARK: - Variables
@@ -21,9 +22,10 @@ final class NewsPresenter: NewsPresentationLogic {
 
 // MARK: - NewsRouterLogic
 extension NewsPresenter: NewsRouterLogic {
-    func routeToWebView(with url: URL?) {
-        let webView = WebViewAssembly.build(with: url)
-        view?.navigationController?.pushViewController(webView, animated: true)
+    func routeToWeb(with url: URL) {
+        let configuration = SFSafariViewController.Configuration()
+        let safariViewController = SFSafariViewController(url: url, configuration: configuration)
+        view?.navigationController?.present(safariViewController, animated: true)
     }
     
     func routeToActivityController(with url: URL?) {
