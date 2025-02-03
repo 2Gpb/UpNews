@@ -25,6 +25,8 @@ final class ImageView: UIView {
     private let shimmerView: ShimmerView = ShimmerView()
     private let image: UIImageView = UIImageView()
     
+    private var currentLoadingURL: URL?
+    
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,12 +40,17 @@ final class ImageView: UIView {
     
     // MARK: - Methods
     func loadImage(_ imageUrl: URL?) {
-        guard let url = imageUrl else { return }
+        guard let url = imageUrl,
+              currentLoadingURL != url else {
+            return
+        }
         
+        currentLoadingURL = url
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let data = data, error == nil else { return }
             
             DispatchQueue.main.async {
+                guard self?.currentLoadingURL == url else { return }
                 if let img = UIImage(data: data) {
                     self?.image.image = img
                     self?.shimmerView.stopShimmering()
