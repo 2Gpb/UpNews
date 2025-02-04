@@ -79,11 +79,18 @@ final class NewsCell: UITableViewCell {
         fatalError(Constants.Error.message)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imgView.reuse()
+    }
+    
     // MARK: - Methods
     func configure(title: String, description: String, url: URL?) {
         titleLabel.text = title
         descriptionLabel.text = description
-        imgView.loadImage(url)
+        if let imageUrl = url {
+            imgView.loadImage(imageUrl)
+        }
     }
     
     // MARK: - SetUp

@@ -39,24 +39,38 @@ final class ImageView: UIView {
     }
     
     // MARK: - Methods
-    func loadImage(_ imageUrl: URL?) {
-        guard let url = imageUrl,
-              currentLoadingURL != url else {
+    func loadImage(_ imageUrl: URL) {
+        guard currentLoadingURL != imageUrl else { return }
+        
+        currentLoadingURL = imageUrl
+        if imageUrl.absoluteString.contains("http://") {
             return
         }
         
-        currentLoadingURL = url
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let data = data, error == nil else { return }
+        if let img = ImageCache.shared.getImage(forKey: imageUrl.absoluteString) {
+            image.image = img
+            shimmerView.isHidden = true
+            shimmerView.stopShimmering()
+        }
+        
+        URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
+            guard let data = data, error == nil, let img = UIImage(data: data) else { return }
             
             DispatchQueue.main.async {
-                guard self?.currentLoadingURL == url else { return }
-                if let img = UIImage(data: data) {
-                    self?.image.image = img
-                    self?.shimmerView.stopShimmering()
-                }
+                guard self?.currentLoadingURL == imageUrl else { return }
+                ImageCache.shared.setImage(image: img, forkey: imageUrl.absoluteString)
+                self?.image.image = img
+                self?.shimmerView.isHidden = true
+                self?.shimmerView.stopShimmering()
             }
         }.resume()
+    }
+    
+    func reuse() {
+        currentLoadingURL = nil
+        image.image = nil
+        shimmerView.isHidden = false
+        shimmerView.startShimmering()
     }
     
     // MARK: - Private methods
