@@ -36,6 +36,7 @@ final class NewsViewController: UIViewController {
     
     // MARK: - Private fields
     private let newsTableView: UITableView = UITableView()
+    private let refreshControl: UIRefreshControl = UIRefreshControl()
     
     // MARK: - Lifecycle
     init(interactor: NewsBusinessLogic & ArticleDataStore) {
@@ -61,6 +62,11 @@ final class NewsViewController: UIViewController {
     // MARK: - Methods
     func displayNews() {
         newsTableView.reloadData()
+        if refreshControl.isRefreshing {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                self?.refreshControl.endRefreshing()
+            }
+        }
     }
     
     // MARK: - SetUp
@@ -68,7 +74,16 @@ final class NewsViewController: UIViewController {
         view.backgroundColor = Constants.View.backgroundColor
         overrideUserInterfaceStyle = .light
         navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        setUpRefresh()
         setUpNewsTable()
+    }
+    
+    private func setUpRefresh() {
+        refreshControl.tintColor = .lightGray
+        refreshControl.addAction( UIAction { [weak self] _ in
+            self?.interactor.refresh()
+        }, for: .valueChanged)
     }
     
     private func setUpNewsTable() {
@@ -81,6 +96,7 @@ final class NewsViewController: UIViewController {
         newsTableView.estimatedRowHeight = Constants.TableView.estimatedRowHeight
         newsTableView.rowHeight = UITableView.automaticDimension
         newsTableView.overrideUserInterfaceStyle = .light
+        newsTableView.refreshControl = refreshControl
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)

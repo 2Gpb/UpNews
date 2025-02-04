@@ -49,6 +49,11 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
         }
     }
     
+    func refresh() {
+        articles?.removeAll()
+        loadFreshNews()
+    }
+    
     // MARK: - Private methods
     private func loadFreshNews(rubric id: Int = 4, numberOfPage pageSize: Int = 12, pageIndex index: Int = 17) {
         newsService.fetchNews(

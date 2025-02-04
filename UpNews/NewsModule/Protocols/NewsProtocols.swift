@@ -13,6 +13,7 @@ protocol NewsBusinessLogic: UITableViewDataSource {
     func loadMoreNews()
     func loadWebView(_ index: Int)
     func loadActivityController(_ index: Int)
+    func refresh()
 }
 
 protocol NewsPresentationLogic {
