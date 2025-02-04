@@ -25,6 +25,7 @@ extension NewsPresenter: NewsRouterLogic {
     func routeToWeb(with url: URL) {
         let configuration = SFSafariViewController.Configuration()
         let safariViewController = SFSafariViewController(url: url, configuration: configuration)
+        safariViewController.delegate = view
         view?.navigationController?.present(safariViewController, animated: true)
     }
     

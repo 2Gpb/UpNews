@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 final class NewsViewController: UIViewController {
     // MARK: - Constants
@@ -21,8 +22,8 @@ final class NewsViewController: UIViewController {
         enum TableView {
             static let backgroundColor: UIColor = .primaryGray
             static let separatorStyle: UITableViewCell.SeparatorStyle = .none
-            static let verticalIndicator: Bool = false
-            static let horizontalOffset: CGFloat = 12
+            static let verticalIndicator: Bool = true
+            static let horizontalOffset: CGFloat = 0
             static let heightForRowAt: CGFloat = 400
             static let swipeTitle: String = "Share"
             static let swipeImg: UIImage? = UIImage(systemName: "square.and.arrow.up")
@@ -78,6 +79,14 @@ final class NewsViewController: UIViewController {
         newsTableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.reuseId)
         newsTableView.estimatedRowHeight = Constants.TableView.estimatedRowHeight
         newsTableView.rowHeight = UITableView.automaticDimension
+        newsTableView.subviews.forEach { subview in
+            if let scrollIndicator = subview as? UIImageView {
+                // Проверяем, что это именно индикатор прокрутки
+                if scrollIndicator.frame.size.width <= 1 {  // Обычно вертикальный индикатор имеет маленькую ширину
+                    scrollIndicator.tintColor = .red  // Устанавливаем нужный цвет
+                }
+            }
+        }
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
@@ -132,5 +141,21 @@ extension NewsViewController: UITableViewDelegate {
         }
         
         return menu
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    ) {
+        if indexPath.row == (tableView.numberOfRows(inSection: indexPath.section) - 2) {
+            interactor.loadMoreNews()
+        }
+    }
+}
+
+extension NewsViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        newsTableView.reloadData()
     }
 }

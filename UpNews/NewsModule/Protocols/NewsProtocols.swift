@@ -10,7 +10,7 @@ import UIKit
 
 protocol NewsBusinessLogic: UITableViewDataSource {
     func loadStart()
-    func loadFreshNews()
+    func loadMoreNews()
     func loadWebView(_ index: Int)
     func loadActivityController(_ index: Int)
 }

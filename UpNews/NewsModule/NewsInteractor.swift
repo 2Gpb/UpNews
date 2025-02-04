@@ -12,8 +12,10 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     private let presenter: NewsPresentationLogic & NewsRouterLogic
     private let newsService: NewsWorker
     
-    // MARK: - Properties
+    // MARK: - Variables
     var articles: [Article.Response]? = []
+    private var isLoading: Bool = false
+    private var pagesToLoad: [Int] = Array(repeating: 1, count: 16)
     
     // MARK: - Lifecycle
     init(presenter: NewsPresentationLogic & NewsRouterLogic, newsService: NewsWorker) {
@@ -28,30 +30,6 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
         }
     }
     
-    func loadFreshNews() {
-        newsService.fetchNews(
-            for: NewsAddress(
-                rubricId: 4,
-                pageSize: 8,
-                pageIndex: 2
-            )
-        ) { [weak self] response in
-
-            switch response {
-            case .success(let response):
-                guard var response else {
-                    print("0")
-                    return
-                }
-                
-                response.passTheRequestId()
-                self?.article(response: response)
-            case .failure:
-                print("-1")
-            }
-        }
-    }
-    
     func loadWebView(_ index: Int) {
         let url = articles?[index].articleUrl ?? URL(fileURLWithPath: "")
         presenter.routeToWeb(with: url)
@@ -61,7 +39,43 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
         presenter.routeToActivityController(with: articles?[index].articleUrl)
     }
     
+    func loadMoreNews() {
+        if isLoading { return }
+        isLoading = true
+        
+        if pagesToLoad.count != 0 {
+            loadFreshNews(pageIndex: pagesToLoad.count)
+            pagesToLoad.remove(at: pagesToLoad.count - 1)
+        }
+    }
+    
     // MARK: - Private methods
+    private func loadFreshNews(rubric id: Int = 1, numberOfPage pageSize: Int = 12, pageIndex index: Int = 17) {
+        newsService.fetchNews(
+            for: NewsAddress(
+                rubricId: id,
+                pageSize: pageSize,
+                pageIndex: index
+            )
+        ) { [weak self] response in
+
+            switch response {
+            case .success(let response):
+                guard var response else {
+                    print("0")
+                    self?.isLoading = false
+                    return
+                }
+    
+                response.passTheRequestId()
+                self?.article(response: response)
+            case .failure:
+                print("-1")
+                self?.isLoading = false
+            }
+        }
+    }
+    
     private func article(response: NewsPage) {
         for article in response.news ?? [] {
             self.articles?.append(
@@ -73,7 +87,9 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
                 )
             )
         }
-        self.presenter.presentNews()
+        
+        presenter.presentNews()
+        isLoading = false
     }
 }
 

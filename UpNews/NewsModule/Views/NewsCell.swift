@@ -27,7 +27,7 @@ final class NewsCell: UITableViewCell {
             static let backgroundColor: UIColor = .white
             static let cornerRadius: CGFloat = 12
             static let clipsToBounds: Bool = true
-            static let horizontalOffset: CGFloat = 4
+            static let horizontalOffset: CGFloat = 16
             static let verticalOffset: CGFloat = 8
         }
         
