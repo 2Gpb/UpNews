@@ -73,7 +73,7 @@ final class ImageView: UIView {
         shimmerView.startShimmering()
     }
     
-    // MARK: - Private methods
+    // MARK: - SetUp
     private func setUp() {
         image.contentMode = Constants.Image.contentMode
         image.clipsToBounds = Constants.Image.clipsToBounds

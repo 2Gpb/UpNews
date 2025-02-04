@@ -50,7 +50,7 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
     }
     
     // MARK: - Private methods
-    private func loadFreshNews(rubric id: Int = 1, numberOfPage pageSize: Int = 12, pageIndex index: Int = 17) {
+    private func loadFreshNews(rubric id: Int = 4, numberOfPage pageSize: Int = 12, pageIndex index: Int = 17) {
         newsService.fetchNews(
             for: NewsAddress(
                 rubricId: id,

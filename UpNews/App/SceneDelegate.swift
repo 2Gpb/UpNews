@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         window = UIWindow(windowScene: windowScene)
+        window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
     }

@@ -23,10 +23,10 @@ final class NewsViewController: UIViewController {
             static let backgroundColor: UIColor = .primaryGray
             static let separatorStyle: UITableViewCell.SeparatorStyle = .none
             static let verticalIndicator: Bool = true
-            static let horizontalOffset: CGFloat = 0
+            static let horizontalOffset: CGFloat = 4
             static let heightForRowAt: CGFloat = 400
-            static let swipeTitle: String = "Share"
-            static let swipeImg: UIImage? = UIImage(systemName: "square.and.arrow.up")
+            static let shareTitle: String = "Share"
+            static let shareImg: UIImage? = UIImage(systemName: "square.and.arrow.up")
             static let estimatedRowHeight: CGFloat = 400
         }
     }
@@ -66,6 +66,7 @@ final class NewsViewController: UIViewController {
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = Constants.View.backgroundColor
+        overrideUserInterfaceStyle = .light
         navigationController?.setNavigationBarHidden(true, animated: true)
         setUpNewsTable()
     }
@@ -79,14 +80,7 @@ final class NewsViewController: UIViewController {
         newsTableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.reuseId)
         newsTableView.estimatedRowHeight = Constants.TableView.estimatedRowHeight
         newsTableView.rowHeight = UITableView.automaticDimension
-        newsTableView.subviews.forEach { subview in
-            if let scrollIndicator = subview as? UIImageView {
-                // Проверяем, что это именно индикатор прокрутки
-                if scrollIndicator.frame.size.width <= 1 {  // Обычно вертикальный индикатор имеет маленькую ширину
-                    scrollIndicator.tintColor = .red  // Устанавливаем нужный цвет
-                }
-            }
-        }
+        newsTableView.overrideUserInterfaceStyle = .light
         
         view.addSubview(newsTableView)
         newsTableView.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
@@ -105,24 +99,6 @@ extension NewsViewController: UITableViewDelegate {
     
     func tableView(
         _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(
-            style: .normal,
-            title: Constants.TableView.swipeTitle
-        ) { [weak self] _, _, completion in
-            self?.interactor.loadActivityController(indexPath.row)
-            completion(true)
-        }
-        
-        action.backgroundColor = .primaryBlue
-        let configuration = UISwipeActionsConfiguration(actions: [action])
-        configuration.performsFirstActionWithFullSwipe = false
-        return configuration
-    }
-    
-    func tableView(
-        _ tableView: UITableView,
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
@@ -131,8 +107,8 @@ extension NewsViewController: UITableViewDelegate {
             previewProvider: nil
         ) { _ in
             let shareAction = UIAction(
-                title: Constants.TableView.swipeTitle,
-                image: Constants.TableView.swipeImg
+                title: Constants.TableView.shareTitle,
+                image: Constants.TableView.shareImg
             ) { [weak self] _ in
                 self?.interactor.loadActivityController(indexPath.row)
             }

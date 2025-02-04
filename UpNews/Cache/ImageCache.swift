@@ -8,11 +8,14 @@
 import UIKit
 
 final class ImageCache {
+    // MARK: - Singleton
     static let shared: ImageCache = ImageCache()
     
+    // MARK: - Private fields
     private let cache: NSCache = NSCache<NSString, UIImage>()
     private let queue: DispatchQueue = DispatchQueue(label: "com.upnews.imageCache")
     
+    // MARK: - Methods
     func setImage(image: UIImage, forkey key: String) {
         queue.async {
             self.cache.setObject(image, forKey: key as NSString)
