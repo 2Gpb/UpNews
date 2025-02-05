@@ -34,7 +34,7 @@ final class ShimmerView: UIView {
         }
     }
     
-    // MARK: - Properties
+    // MARK: - Private fields
     private let gradientLayer: CAGradientLayer = CAGradientLayer()
     private let animation = CABasicAnimation(keyPath: Constants.Animation.key)
     

@@ -9,13 +9,16 @@ import Foundation
 import UIKit
 
 final class NewsService: NewsWorker {
+    // MARK: - Private fields
     private let networking: NetworkingLogic
     private let decoder: JSONDecoder = JSONDecoder()
     
+    // MARK: - Lifecycle
     init(networking: NetworkingLogic) {
         self.networking = networking
     }
     
+    // MARK: - Methods
     func fetchNews(
         for address: NewsAddress,
         completion: ((Result<NewsPage?, Error>) -> Void)?
@@ -28,7 +31,8 @@ final class NewsService: NewsWorker {
         
         fetch(request: Request(endpoint: endpoint, timeInterval: 5), completion: completion)
     }
-        
+    
+    // MARK: - Private methods
     private func fetch<T: Decodable>(
         request: Request,
         completion: ((Result<T?, Error>) -> Void)?

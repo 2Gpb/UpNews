@@ -67,7 +67,6 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
             switch response {
             case .success(let response):
                 guard var response else {
-                    print("0")
                     self?.isLoading = false
                     return
                 }
@@ -75,7 +74,7 @@ final class NewsInteractor: NSObject, NewsBusinessLogic, ArticleDataStore {
                 response.passTheRequestId()
                 self?.article(response: response)
             case .failure:
-                print("-1")
+                print("Failed to load news")
                 self?.isLoading = false
             }
         }

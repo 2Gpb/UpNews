@@ -8,13 +8,6 @@
 import Foundation
 import UIKit
 
-// MARK: - Start
-enum Start {
-    struct Request { }
-    struct Response { }
-    struct ViewModel { }
-}
-
 // MARK: - Article
 enum Article {
     struct Response {
@@ -23,8 +16,6 @@ enum Article {
         var imgUrl: URL?
         var articleUrl: URL?
     }
-    
-    struct ViewModel { }
 }
 
 // MARK: - NewsPage

@@ -25,6 +25,7 @@ final class ImageView: UIView {
     private let shimmerView: ShimmerView = ShimmerView()
     private let image: UIImageView = UIImageView()
     
+    // MARK: - Private variables
     private var currentLoadingURL: URL?
     
     // MARK: - Lifecycle

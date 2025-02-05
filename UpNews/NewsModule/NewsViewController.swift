@@ -28,13 +28,14 @@ final class NewsViewController: UIViewController {
             static let shareTitle: String = "Share"
             static let shareImg: UIImage? = UIImage(systemName: "square.and.arrow.up")
             static let estimatedRowHeight: CGFloat = 400
+            static let loadMoreThreshold: Int = 2
         }
     }
     
     // MARK: - Variables
     private var interactor: NewsBusinessLogic & ArticleDataStore
     
-    // MARK: - Private fields
+    // MARK: - UI Components
     private let newsTableView: UITableView = UITableView()
     private let refreshControl: UIRefreshControl = UIRefreshControl()
     
@@ -140,12 +141,15 @@ extension NewsViewController: UITableViewDelegate {
         willDisplay cell: UITableViewCell,
         forRowAt indexPath: IndexPath
     ) {
-        if indexPath.row == (tableView.numberOfRows(inSection: indexPath.section) - 2) {
+        if indexPath.row ==
+            (tableView.numberOfRows(inSection: indexPath.section) - Constants.TableView.loadMoreThreshold)
+        {
             interactor.loadMoreNews()
         }
     }
 }
 
+// MARK: - SFSafariViewControllerDelegate
 extension NewsViewController: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         newsTableView.reloadData()
